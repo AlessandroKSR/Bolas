@@ -3,10 +3,7 @@ package com.dotsandboxes.game;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -15,17 +12,23 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
  * platforms.
  */
 public class Main implements ApplicationListener {
-    Grade celula;
+    Grade[] celulas;
     Bola bola;
     FitViewport viewport;
     Random random = new Random();
 
     @Override
     public void create() {
-        celula = new Grade();
+        celulas = new Grade[25];
         bola = new Bola();
         bola.create();
-        celula.create();
+
+        for(int i = 0; i < 25; i++)
+        {
+            celulas[i] = new Grade();
+            celulas[i].create();
+        }
+
         viewport = new FitViewport(8, 8);
         viewport.getCamera().position.set(4, 4, 0);
     }
@@ -53,7 +56,16 @@ public class Main implements ApplicationListener {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         
-        celula.drawQuadrado(viewport, 1.5F, 1.5F);
+        for(int i = 0; i < 5; i++)
+        {
+            for(int j = 0; j < 5;j++)
+            {
+                celulas[j].drawQuadrado(viewport, 1.5F + j, 1.5F + i);;
+            }
+
+            
+        }
+       
         bola.criarGrade(random);
         
     }
