@@ -43,6 +43,7 @@ public class Main implements ApplicationListener {
         myMouse.setMousePosition(viewport);
         for(int i = 0; i < 25; i++) {
             celulas[i].mouseHover(myMouse.getMousePosicao());
+            celulas[i].updateGrade();
         }
         
     }
