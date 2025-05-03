@@ -17,9 +17,7 @@ public class Mouse {
         viewport.unproject(mousePosicao);
     }
 
-
     public Vector2 getMousePosicao() {
-        System.out.println(mousePosicao.x + " " + mousePosicao.y);
         return mousePosicao;
     }
 }
