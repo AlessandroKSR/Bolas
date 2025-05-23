@@ -1,79 +1,36 @@
 package com.dotsandboxes.game;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
-public class Main implements ApplicationListener {
-    Grade[] celulas;
-    Bola bolas;
-    FitViewport viewport;
-    Mouse myMouse;
+public class Main extends Game{
+	public SpriteBatch batch;
+	public BitmapFont font;
+	public FitViewport viewport;
 
-    @Override
-    public void create() {
-        celulas = new Grade[25];
-        myMouse = new Mouse();
-        bolas = new Bola();
-        bolas.create();
-        for(int i = 0; i < 25; i++)
-        {
-            celulas[i] = new Grade();
-            celulas[i].create();
-        }
+	public void create() {
+		batch = new SpriteBatch();
+		// use libGDX's default font
+		font = new BitmapFont();
+		viewport = new FitViewport(8, 8);
+		
+		//font has 15pt, but we need to scale it to our viewport by ratio of viewport height to screen height 
+		font.setUseIntegerPositions(false);
+		font.getData().setScale(viewport.getWorldHeight() / Gdx.graphics.getHeight());
+		
+		this.setScreen(new MenuJogo(this));
+	}
 
-        viewport = new FitViewport(8, 8);
-        viewport.getCamera().position.set(4, 4, 0);
-    }
+	public void render() {
+		super.render(); // important!
+	}
 
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-    }
+	public void dispose() {
+		batch.dispose();
+		font.dispose();
+	}
 
-    @Override
-    public void render() {
-        draw();
-        logic();
-        bolas.criarGrade();
-    }
-
-    private void logic() {
-        myMouse.setMousePosition(viewport);
-        for(int i = 0; i < 25; i++) {
-            celulas[i].mouseHover(myMouse.getMousePosicao());
-            celulas[i].updateGrade();
-        }
-        
-    }
-
-    
-    private void draw() {
-        ScreenUtils.clear(Color.BLACK);
-        viewport.apply();
-
-        celulas[0].setContadorGrade(0);
-        for(int i = 0; i < 5; i++)
-        {
-            for(int j = 0; j < 5; j++)
-            {
-                celulas[celulas[0].getContadorGrade()].drawQuadrado(viewport, j + 1.5f, i + 1.5f);
-                celulas[0].updateContadorGrade();
-            }
-        }
-        
-    }
-
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
-
-    @Override
-    public void dispose() {
-    }
 }
