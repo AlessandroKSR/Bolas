@@ -3,7 +3,6 @@ package com.dotsandboxes.game;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class MenuJogo implements Screen{
     final Main game;
