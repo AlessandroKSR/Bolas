@@ -11,6 +11,8 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class Grade {
     private static int contatadorGrade = 0;
+    private static float colisorLinhaHorizontalWidth = 0.5f, colisorLinhaHorizontalHeight = 0.2f,
+            colisorLinhaVerticalHeight = 0.5f, colisorLinhaVerticalWidth = 0.2f;
     private ShapeRenderer quadrado;
     private Boolean direita, esquerda, cima, baixo, celulaDominada;
     private Rectangle[] colisorLinha;
@@ -20,7 +22,7 @@ public class Grade {
         quadrado = new ShapeRenderer();
         colisorLinha = new Rectangle[4];
         for (int i = 0; i < 4; i++) {
-            colisorLinha[i] = new Rectangle(0, 0, 0.1f, 0.9f);
+            colisorLinha[i] = new Rectangle(0, 0, colisorLinhaVerticalWidth, colisorLinhaVerticalHeight);
         }
     }
 
@@ -37,21 +39,21 @@ public class Grade {
         Gdx.gl.glLineWidth(10);
         quadrado.setProjectionMatrix(viewport.getCamera().combined);
         quadrado.begin(ShapeType.Line);
-        quadrado.setColor(Color.MAGENTA);
+        quadrado.setColor(Color.GRAY);
 
-        quadrado.line(coordenadaX, coordenadaY, coordenadaX + 1, coordenadaY);
-        colisorLinha[0].setPosition(coordenadaX - 0.1f, coordenadaY + 0.1f);
+        quadrado.line(coordenadaX, coordenadaY, coordenadaX + 1, coordenadaY); // Direita
+        colisorLinha[0].setPosition(coordenadaX + 0.9f, coordenadaY + 0.25f);
 
-        quadrado.line(coordenadaX, coordenadaY, coordenadaX, coordenadaY + 1);
-        colisorLinha[1].setPosition(coordenadaX, coordenadaY + 1);
-        colisorLinha[1].setSize(0.9f, 0.1f);
+        quadrado.line(coordenadaX, coordenadaY, coordenadaX, coordenadaY + 1); // Cima
+        colisorLinha[1].setPosition(coordenadaX + 0.25f, coordenadaY + 0.9f);
+        colisorLinha[1].setSize(colisorLinhaHorizontalWidth, colisorLinhaHorizontalHeight);
 
-        quadrado.line(coordenadaX, coordenadaY + 1, coordenadaX + 1, coordenadaY + 1);
-        colisorLinha[2].setPosition(coordenadaX, coordenadaY);
-        colisorLinha[2].setSize(0.9f, 0.1f);
+        quadrado.line(coordenadaX, coordenadaY + 1, coordenadaX + 1, coordenadaY + 1); // Baixo
+        colisorLinha[2].setPosition(coordenadaX + 0.25f, coordenadaY - 0.1f);
+        colisorLinha[2].setSize(colisorLinhaHorizontalWidth, colisorLinhaHorizontalHeight);
 
-        quadrado.line(coordenadaX + 1, coordenadaY + 1, coordenadaX + 1, coordenadaY);
-        colisorLinha[3].setPosition(coordenadaX + 0.95f, coordenadaY + 0.1f);
+        quadrado.line(coordenadaX + 1, coordenadaY + 1, coordenadaX + 1, coordenadaY); // Esquerda
+        colisorLinha[3].setPosition(coordenadaX - 0.1f, coordenadaY + 0.25f);
         quadrado.end();
     }
 
@@ -61,7 +63,7 @@ public class Grade {
             if (direita == false) {
                 quadrado.begin(ShapeType.Filled);
                 quadrado.setColor(Color.RED);
-                quadrado.rect(colisorLinha[0].x, colisorLinha[0].y - 0.2f, 0.2f, 1.2f);
+                quadrado.rect(colisorLinha[0].x, colisorLinha[0].y - 0.35f, 0.2f, 1.2f);
                 quadrado.end();
 
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -75,7 +77,7 @@ public class Grade {
             if (cima == false) {
                 quadrado.begin(ShapeType.Filled);
                 quadrado.setColor(Color.RED);
-                quadrado.rect(colisorLinha[1].x - 0.1f, colisorLinha[1].y - 0.1f, 1.2f, 0.2f);
+                quadrado.rect(colisorLinha[1].x - 0.35f, colisorLinha[1].y, 1.2f, 0.2f);
                 quadrado.end();
 
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -88,7 +90,7 @@ public class Grade {
             if (baixo == false) {
                 quadrado.begin(ShapeType.Filled);
                 quadrado.setColor(Color.RED);
-                quadrado.rect(colisorLinha[2].x - 0.1f, colisorLinha[2].y - 0.1f, 1.2f, 0.2f);
+                quadrado.rect(colisorLinha[2].x - 0.35f, colisorLinha[2].y, 1.2f, 0.2f);
                 quadrado.end();
 
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -102,7 +104,7 @@ public class Grade {
             if (esquerda == false) {
                 quadrado.begin(ShapeType.Filled);
                 quadrado.setColor(Color.RED);
-                quadrado.rect(colisorLinha[3].x - 0.05f, colisorLinha[3].y - 0.2f, 0.2f, 1.2f);
+                quadrado.rect(colisorLinha[3].x, colisorLinha[3].y - 0.35f, 0.2f, 1.2f);
                 quadrado.end();
 
                 if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
@@ -114,18 +116,44 @@ public class Grade {
         }
     }
 
-    public int updateGrade() {
+    public boolean updateGrade() {
         if (direita && esquerda && cima && baixo) {
             celulaDominada = true;
-            return 1;
+            return true;
         } else {
-            return 0;
+            return false;
+        }
+    }
+
+    public void updateBordas() {
+        if (direita == true) {
+            quadrado.begin(ShapeType.Filled);
+            quadrado.setColor(Color.NAVY);
+            quadrado.rect(colisorLinha[0].x, colisorLinha[0].y - 0.35f, 0.2f, 1.2f);
+            quadrado.end();
+        }
+        if (cima == true) {
+            quadrado.begin(ShapeType.Filled);
+            quadrado.setColor(Color.NAVY);
+            quadrado.rect(colisorLinha[1].x - 0.35f, colisorLinha[1].y, 1.2f, 0.2f);
+            quadrado.end();
+        }
+        if (baixo == true) {
+            quadrado.begin(ShapeType.Filled);
+            quadrado.setColor(Color.NAVY);
+            quadrado.rect(colisorLinha[2].x - 0.35f, colisorLinha[2].y, 1.2f, 0.2f);
+            quadrado.end();
+        }
+        if (esquerda == true) {
+            quadrado.begin(ShapeType.Filled);
+            quadrado.setColor(Color.NAVY);
+            quadrado.rect(colisorLinha[3].x, colisorLinha[3].y - 0.35f, 0.2f, 1.2f);
+            quadrado.end();
         }
     }
 
     private void desenharCelulaDominada() {
         if (celulaDominada == true) {
-            System.out.println(celulaDominada);
             quadrado.setColor(Color.BLUE);
         } else {
             quadrado.setColor(Color.BLACK);
